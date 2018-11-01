@@ -1,7 +1,6 @@
 /*jshint esversion: 6*/
 let express = require('express');
 let app = express();
-let crontab = require("./controllers/crontab");
 let servers = require("./controllers/servers");
 let cronjobs = require("./controllers/cronjobs");
 let deploycronjobs = require("./controllers/deploycronjobs");
@@ -63,7 +62,6 @@ app.get(routes.servers, function (req, res) {
     servers.list(function(docs) {
         res.render('servers', {
             routes: JSON.stringify(routes),
-            backups: crontab.get_backup_names(),
             servers: JSON.stringify(docs),
         });
     });
@@ -93,7 +91,6 @@ app.get(routes.deploycronjobs, function (req, res) {
     deploycronjobs.list(function(docs) {
         res.render('deploycronjobs', {
             routes: JSON.stringify(routes),
-            backups: crontab.get_backup_names(),
             deployedcrons: JSON.stringify(docs)
         });
     });
@@ -127,7 +124,6 @@ app.get(routes.cronjobsstatus, function (req, res) {
     cronjobsstatus.list(function(docs) {
         res.render('cronjobsstatus', {
             routes: JSON.stringify(routes),
-            backups: crontab.get_backup_names(),
             servers: JSON.stringify(docs),
         });
     });
@@ -159,7 +155,6 @@ app.get(routes.cronjobs, function (req, res) {
     cronjobs.list(function(docs) {
         res.render('cronjobs', {
             routes: JSON.stringify(routes),
-            backups: crontab.get_backup_names(),
             cronjobs: JSON.stringify(docs),
         });
     });
