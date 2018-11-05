@@ -3,7 +3,7 @@ Manage crontab from centralized master server. Deploy cronjobs to crontab using 
 You can add/edit/update/delete servers, crons and even deployed crons  
 Your footprint will be revoked if you will remove the server
 
-# Note
+# note
 **Cron watcher which will be deployed to servers is written in php and will expect `PHP` and `CURL` to be installed on servers**
 
 
@@ -12,7 +12,7 @@ $ `npm install`
 $ `npm install -g pm2`  
 $ `apt install ansible`
 
-# generate SSH-KEY
+# generate ssh-key
 Generate ssh-key which will be placed to servers for accessing
   
 $ `ssh-keygen`
