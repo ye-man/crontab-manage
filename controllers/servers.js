@@ -63,7 +63,6 @@ exports.create_new = function(req, res){
             return res.json({resCode: 400, err: err});
         }
 
-
         let cmd = "/usr/bin/sshpass -p '" + password + "' /usr/bin/ssh-copy-id -i " + ssh_key_path + " " + username + "@" + hostname;
 
 
@@ -143,7 +142,6 @@ exports.remove = function(req, res){
         }
 
         let cmd = "sed -i.bak '/" + local_hostname + "/d' ~/.ssh/authorized_keys";
-
 
         let extra_vars = "hostname='"+serverdata.hostname+"' cmd='"+cmd+"' dest_dir_php='"+dest_file_path+"' dest_dir_txt='"+dest_txt_file_path+"'";
 

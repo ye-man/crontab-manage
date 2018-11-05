@@ -25,7 +25,7 @@ while ($line = fgets($fh)) {
 fclose($fh);
 
 $json = json_encode($cron_errors);
-$domain = "http://7e4a987f.ngrok.io";
+$domain = "http://mydomain.com"; //specify your domain here where your app is deployed
 $path = "/cronjobsstatus/listener";
 $cmd = "echo '".$json."' | curl --header 'Content-Type: application/json' -d @- $domain".$path;
 $response = shell_exec($cmd);

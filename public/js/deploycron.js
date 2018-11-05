@@ -29,6 +29,7 @@ function fetchServers(){
     var con = '';
     con += '<option value="null">Select Server</option>';
     $.get(routes.servers_api.list, function (servers) {
+            _servers = servers;
             for(var i = 0; i < servers.length; i++){
                 con += '<option value="'+servers[i]._id+'">'+servers[i].name+' - '+servers[i].username+'@'+servers[i].hostname+'</option>';
             }
@@ -41,6 +42,7 @@ function fetchCrons() {
     var con = '';
     con += '<option value="null">Select CronJob</option>';
     $.get(routes.cronjobs_api.list, function (crons) {
+        _cronjobs = crons;
         for(var i = 0; i < crons.length; i++){
             con += '<option value="'+crons[i]._id+'">'+crons[i].name+' - '+crons[i].job+'</option>';
         }
@@ -119,7 +121,7 @@ function editServer(_id){
     });
 }
 
-function deleteServer(_id){
+function deleteCron(_id){
     // TODO fix this. pass callback properly
     messageBox("<p> Do you want to delete this deplolyed cron? </p>", "Confirm delete", null, null, function(){
         loader('show');
