@@ -4,6 +4,13 @@
   tasks:
   - name: 'Remove job from crontab'
     cron:
-      name: "{{ name }}"
+      name: "{{ cron_id }}"
+      state: absent
+
+  - name: "Remove cron-id from cron watcher text file"
+    blockinfile:
+      dest: "{{ dest_text_dir }}"
+      marker: "{{ cron_id }}"
+      block: ""
       state: absent
 

@@ -121,7 +121,7 @@ exports.deployCrons = function(data){
     let day = components[2];
     let month = components[3];
     let weekday = components[4];
-    let name = data.cron_details._id;
+    let cron_id = data.cron_details._id;
 
     let job = crontab_string; //data.cron_details.job + "  3>&1 1>&2 2>&3  > " + log_file;
 
@@ -132,13 +132,14 @@ exports.deployCrons = function(data){
     let hostname = data.server_details.hostname;
 
     let extra_vars = "hostname="+hostname+" " +
-        "name='"+name+"' " +
+        "cron_id='"+cron_id+"' " +
         "minute='"+minute+"' " +
         "hour='"+hour+"' " +
         "day='"+day+"' " +
         "weekday='"+weekday+"' " +
         "month='"+month+"' " +
-        "job='"+job+"'";
+        "job='"+job+"' " +
+        "dest_txt_dir='"+dest_txt_file_path+"'";
 
 
     let ansible_playbook_file = ansible_playbook_path + "addCron.yaml";
@@ -188,15 +189,15 @@ exports.remove = function(req, res){
 
                 cronsdb.findOne({_id: deployedCron.cron_id}, function (err, crondata) {
                     if (!err) {
-                        let name = crondata._id;
+                        let cron_id = crondata._id;
                         let hostname = serverdata.hostname;
 
                         db.remove({_id: data._id}, function (err) {
                             if(!err) {
 
-                                let extra_vars = "hostname=" + hostname + " name='" + name + "'";
+                                let cmd = "sed -i.bak '/" + cron_id + "/d' " + dest_txt_file_path;
 
-                                console.log(extra_vars);
+                                let extra_vars = "hostname=" + hostname + " cron_id='" + cron_id + "' cmd='"+cmd+"' dest_text_dir='"+dest_txt_file_path+"'";
 
                                 let ansible_playbook_file = ansible_playbook_path + "removeCron.yaml";
                                 let ansible_cmd = '/usr/bin/ansible-playbook ' + ansible_playbook_file + ' --extra-vars "' + extra_vars + '"';

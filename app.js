@@ -1,11 +1,8 @@
 /*jshint esversion: 6*/
 let express = require('express');
 let app = express();
-let servers = require("./controllers/servers");
-let cronjobs = require("./controllers/cronjobs");
-let deploycronjobs = require("./controllers/deploycronjobs");
-let cronjobsstatus = require("./controllers/cronjobsstatus");
-let crontabhook = require("./controllers/crontabhook");
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 let moment = require('moment');
 let createError = require('http-errors');
 let path = require('path');
@@ -33,7 +30,6 @@ app.use(express.static(__dirname + '/public/js'));
 app.set('views', __dirname + '/views');
 
 
-
 /**
  * Global constants
  */
@@ -48,7 +44,9 @@ global.dest_txt_file_path = "/opt/"+watcher_txt_file;
 global.ubuntu_log_folder = "/var/log";
 global.centos_log_folder = "/etc/httpd/logs";
 global.ansible_host_file_path = "/etc/ansible/hosts";
-
+io.on('connection', function (socket) {
+    global.socket = socket;
+});
 
 exec("hostname", function(err, hostname) {
     if (err){
@@ -57,6 +55,13 @@ exec("hostname", function(err, hostname) {
         global.local_hostname = hostname.trim();
     }
 });
+
+let servers = require("./controllers/servers");
+let cronjobs = require("./controllers/cronjobs");
+let deploycronjobs = require("./controllers/deploycronjobs");
+let crontabhook = require("./controllers/crontabhook");
+let cronjobsstatus = require("./controllers/cronjobsstatus");
+
 
 app.get(routes.servers, function (req, res) {
     servers.list(function(docs) {
@@ -130,8 +135,9 @@ app.get(routes.cronjobsstatus, function (req, res) {
 });
 
 
-// get the log file a given job. id passed as query param
-app.post(routes.cronjobsstatus_api.add, servers.create_new);
+app.post(routes.cronjobsstatus_api.add, cronjobsstatus.create_new);
+
+app.post(routes.cronjobsstatus_api.listener, cronjobsstatus.listener);
 
 
 // get the log file a given job. id passed as query param
@@ -229,7 +235,7 @@ app.set('host', (process.env.HOST || '127.0.0.1'));
 // set port to 8000 or the value set by environment let PORT
 app.set('port', (process.env.PORT || 9000));
 
-app.listen(app.get('port'), app.get('host'), function() {
+server.listen(app.get('port'), app.get('host'), function() {
     console.log("Node version:", process.versions.node);
 });
 

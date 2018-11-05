@@ -92,7 +92,6 @@ exports.create_new = function(req, res){
 
         function playAnsible() {
 
-
             let log_folder = (distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
 
             let job = "/usr/bin/php " + dest_file_path + " >> " + log_folder + "/cron_watcher.log";

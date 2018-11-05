@@ -1,0 +1,3 @@
+{"name":"Success Cron","job":"ls -al","schedule":"* * * * *","_id":"1vNvAfhgSZXNlwsC"}
+{"name":"Error Cron","job":"lsa","schedule":"* * * * *","_id":"SmoEEE1fleewSAYG"}
+{"name":"Error 2","job":"cat 123","schedule":"* * * * *","_id":"eirSxP1Ao4Lbh6bV"}

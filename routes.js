@@ -25,7 +25,8 @@ exports.routes = {
         "add": "/cronjobsstatus/add",
         "update": "/cronjobsstatus/update",
         "remove": "/cronjobsstatus/remove",
-        "list": "/cronjobsstatus/list"
+        "list": "/cronjobsstatus/list",
+        "listener": "/cronjobsstatus/listener"
     },
     "crontabhook": {
         "complete": "/crontabhook/complete"

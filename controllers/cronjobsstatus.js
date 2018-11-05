@@ -8,9 +8,20 @@ const exec = require('child_process').exec;
 let ssh_key_path = "~/.ssh/id_rsa.pub";
 
 
+
 db.loadDatabase(function (err) {
     if (err) throw err; // no hope, just terminate
 });
+
+exports.listener = function(req, res){
+    res.json({resCode: 200}); //released the request
+    let body = req.body;
+    if(body && typeof body !== undefined) {
+        console.log(body)
+        socket.emit("cronsstatus", body);
+    }
+
+};
 
 exports.list = function(callback){
     var db = new Datastore({ filename: __dirname + '/cronjobsstatus/' + db_name });

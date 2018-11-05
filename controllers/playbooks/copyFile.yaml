@@ -10,10 +10,15 @@
       group: root
       mode: 0644
 
-  - name: "Add txt file for cron watcher to read params from there"
-    copy:
-      content: "{{ content }}"
+  #- name: "Add txt file for cron watcher to read params from there"
+  #  copy:
+  #    content: "{{ content }}"
+  #    dest: "{{ dest_txt_dir }}"
+
+  - name: "Create a watcher text file"
+    file:
       dest: "{{ dest_txt_dir }}"
+      state: touch
 
   - name: "Add cron job watcher to crontab"
     cron:

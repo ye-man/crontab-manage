@@ -4,7 +4,7 @@
   tasks:
   - name: "Add job to crontab"
     cron:
-      name: "{{ name }}"
+      name: "{{ cron_id }}"
       minute: "{{ minute }}"
       hour: "{{ hour }}"
       day: "{{ day }}"
@@ -12,5 +12,11 @@
       month: "{{ month }}"
       job: "{{ job }}"
       backup: yes
+
+  - name: "Append cron-id in file"
+    lineinfile:
+      dest: "{{ dest_txt_dir }}"
+      line: "{{ cron_id }}"
+
 
 
