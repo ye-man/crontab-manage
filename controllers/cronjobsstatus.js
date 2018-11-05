@@ -1,7 +1,7 @@
 //load database
 const Datastore = require('nedb');
 const path = require("path");
-const db = new Datastore({filename: __dirname + '/cronjobsstatus/servers.db'});
+const db = new Datastore({filename: __dirname + '/cronjobsstatus/cronjobsstatus.db'});
 let fs = require('fs');
 let db_name = "cronjobsstatus.db";
 const exec = require('child_process').exec;
@@ -46,31 +46,7 @@ exports.delete = function(){
 };
 
 exports.create_new = function(req, res){
-    var data = req.body;
-    let hostname = data.hostname;
-    let username = data.username;
-    let password = data.password;
-    let name = data.name;
-
-
-    let cmd = "sshpass -p '"+password+"' ssh-copy-id -i "+ssh_key_path+" "+username+"@"+hostname;
-
-    exec(cmd, function(err) {
-        if (err){
-            console.log(err);
-            return res.json({resCode: 400, err: err});
-        }
-
-        let _data = {
-            name: name,
-            hostname: hostname,
-            username: username
-        };
-
-        db.insert(_data);
-        return res.json({resCode: 200});
-    });
-
+   
 };
 
 exports.update = function(data){
