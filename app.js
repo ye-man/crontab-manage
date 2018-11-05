@@ -37,6 +37,7 @@ app.set('views', __dirname + '/views');
 global.watcher_file = "cron_watcher.php";
 global.watcher_txt_file = "cron_watcher.txt";
 global.ssh_key_path = "~/.ssh/id_rsa.pub";
+global.ssh_known_hosts_path = "~/.ssh/known_hosts";
 global.ansible_playbook_path = __dirname + "/controllers/playbooks/";
 global.source_file_path = __dirname + "/controllers/scripts/"+watcher_file;
 global.dest_file_path = "/opt/"+watcher_file;

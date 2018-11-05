@@ -54,62 +54,73 @@ exports.create_new = function(req, res){
     let name = data.name;
     let distribution = data.distribution;
 
-    let cmd = "/usr/bin/sshpass -p '"+password+"' /usr/bin/ssh-copy-id -i "+ssh_key_path+" "+username+"@"+hostname;
 
+    let ssh_keyscan = "/usr/bin/ssh-keyscan -H -t ecdsa "+hostname+" >> "+ ssh_known_hosts_path;
 
-    exec(cmd, function(err) {
-        if (err){
+    exec(ssh_keyscan, function(err) {
+        if (err) {
             console.log(err);
             return res.json({resCode: 400, err: err});
         }
 
-        let _data = {
-            name: name,
-            hostname: hostname,
-            username: username,
-            distribution: distribution
-        };
 
-        let cmd = 'cat ' + ansible_host_file_path + ' | grep "' + hostname + '"';
+        let cmd = "/usr/bin/sshpass -p '" + password + "' /usr/bin/ssh-copy-id -i " + ssh_key_path + " " + username + "@" + hostname;
 
-        exec(cmd, function (err, stdout) {
-            if(!stdout && stdout === ""){
-                let content = "'";
-                content += hostname + " " + "ansible_ssh_user=" + username;
-                content += "'";
-                exec("echo "+ content + " >> " + ansible_host_file_path, function (err, stdout) {
-                    //new host entry added play ansible now
-                    console.log('New entry added in host ...');
-                    playAnsible();
-                });
-            }else{
-                //already exists play ansible
-                console.log('Host file contains hostname already exist...');
-                playAnsible();
+
+        exec(cmd, function (err) {
+            if (err) {
+                console.log(err);
+                return res.json({resCode: 400, err: err});
             }
-        });
 
+            let _data = {
+                name: name,
+                hostname: hostname,
+                username: username,
+                distribution: distribution
+            };
 
-        function playAnsible() {
+            let cmd = 'cat ' + ansible_host_file_path + ' | grep "' + hostname + '"';
 
-            let log_folder = (distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
-
-            let job = "/usr/bin/php " + dest_file_path + " >> " + log_folder + "/cron_watcher.log";
-
-            let extra_vars = "hostname='" + hostname + "' source_dir='" + source_file_path + "' dest_dir='" + dest_file_path + "' " +
-                "job='" + job + "' dest_txt_dir='" + dest_txt_file_path + "' content='" + hostname + "'";
-
-            let ansible_playbook_file = ansible_playbook_path + "copyFile.yaml";
-            let ansible_cmd = '/usr/bin/ansible-playbook ' + ansible_playbook_file + ' --extra-vars "' + extra_vars + '"';
-
-            exec(ansible_cmd, function (stderr, stdout) {
-                console.log(stderr);
-                console.log(stdout);
+            exec(cmd, function (err, stdout) {
+                if (!stdout && stdout === "") {
+                    let content = "'";
+                    content += hostname + " " + "ansible_ssh_user=" + username;
+                    content += "'";
+                    exec("echo " + content + " >> " + ansible_host_file_path, function (err, stdout) {
+                        //new host entry added play ansible now
+                        console.log('New entry added in host ...');
+                        playAnsible();
+                    });
+                } else {
+                    //already exists play ansible
+                    console.log('Host file contains hostname already exist...');
+                    playAnsible();
+                }
             });
 
-            db.insert(_data);
-            return res.json({resCode: 200});
-        }
+
+            function playAnsible() {
+
+                let log_folder = (distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
+
+                let job = "/usr/bin/php " + dest_file_path + " >> " + log_folder + "/cron_watcher.log";
+
+                let extra_vars = "hostname='" + hostname + "' source_dir='" + source_file_path + "' dest_dir='" + dest_file_path + "' " +
+                    "job='" + job + "' dest_txt_dir='" + dest_txt_file_path + "' content='" + hostname + "'";
+
+                let ansible_playbook_file = ansible_playbook_path + "copyFile.yaml";
+                let ansible_cmd = '/usr/bin/ansible-playbook ' + ansible_playbook_file + ' --extra-vars "' + extra_vars + '"';
+
+                exec(ansible_cmd, function (stderr, stdout) {
+                    console.log(stderr);
+                    console.log(stdout);
+                });
+
+                db.insert(_data);
+                return res.json({resCode: 200});
+            }
+        });
     });
 
 };

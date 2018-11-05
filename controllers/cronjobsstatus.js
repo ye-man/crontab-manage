@@ -17,7 +17,6 @@ exports.listener = function(req, res){
     res.json({resCode: 200}); //released the request
     let body = req.body;
     if(body && typeof body !== undefined) {
-        console.log(body)
         socket.emit("cronsstatus", body);
     }
 
@@ -46,7 +45,7 @@ exports.delete = function(){
 };
 
 exports.create_new = function(req, res){
-   
+
 };
 
 exports.update = function(data){
