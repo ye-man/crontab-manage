@@ -4,7 +4,7 @@ You can add/edit/update/delete servers, crons and even deployed crons
 Your footprint will be revoked if you will remove the server
 
 # note
-**Cron watcher which will be deployed to servers is written in php and will expect `PHP` and `CURL` to be installed on servers**
+**Cron watcher which will be deployed to servers is written in php and will expect `PHP` and `CURL` to be installed on servers**  
 **Make your ansible hosts file written which will be present inside `/etc/ansible/hosts`**
 
 # setup
