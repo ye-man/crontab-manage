@@ -1,6 +1,5 @@
 node_modules/
 .idea/
-controllers/cronjobs/*
-controllers/cronjobsstatus/*
-controllers/servers/*
-controllers/deploycronjobs/*
+controllers/cronjobs/cronjobs.db
+controllers/servers/servers.db
+controllers/deploycronjobs/deploycronjobs.db
