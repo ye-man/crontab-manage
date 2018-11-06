@@ -24,10 +24,12 @@ while ($line = fgets($fh)) {
 
 fclose($fh);
 
-$json = json_encode($cron_errors);
-$domain = "http://mydomain.com"; //specify your domain here where your app is deployed
-$path = "/cronjobsstatus/listener";
-$cmd = "echo '".$json."' | curl --header 'Content-Type: application/json' -d @- $domain".$path;
-$response = shell_exec($cmd);
+if(count($cron_errors) > 0) {
+    $json = json_encode($cron_errors);
+    $domain = "http://mydomain.com"; //specify your domain here where your app is deployed
+    $path = "/cronjobsstatus/listener";
+    $cmd = "echo '" . $json . "' | curl --header 'Content-Type: application/json' -d @- $domain" . $path;
+    $response = shell_exec($cmd);
+}
 
 ?>
