@@ -3,3 +3,4 @@ node_modules/
 controllers/cronjobs/cronjobs.db
 controllers/servers/servers.db
 controllers/deploycronjobs/deploycronjobs.db
+controllers/slack/slack.db
