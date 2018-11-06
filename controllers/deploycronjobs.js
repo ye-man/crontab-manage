@@ -141,11 +141,11 @@ exports.deployCrons = function(res, data){
     exec(ansible_cmd, function (stderr, stdout) {
        console.log(stderr);
        if(!stderr){
-           updateStatus(data._id, 'completed');
+           updateStatus(data._id, 'deployed');
            return res.json({resCode: 200, message: "Deployed"}); //releasing the UI
 
        }else{
-           updateStatus(data._id, 'not_completed');
+           updateStatus(data._id, 'not_deployed');
            return res.json({resCode: 400, err: stderr});
        }
     });

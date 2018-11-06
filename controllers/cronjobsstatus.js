@@ -7,7 +7,6 @@ let db_name = "cronjobsstatus.db";
 let Slack = require('slack');
 const bot = new Slack();
 
-
 db.loadDatabase(function (err) {
 });
 
@@ -27,12 +26,13 @@ exports.listener = function(req, res){
                 let formatted_text = "";
                 for(let k = 0; k < body.length; k++) {
                     let out = body[k].output;
-                    formatted_text += "Status: " + out[0] + " - Hostname: " + body[k].hostname + " - CronId: " + body[k].cron_id;
+                    formatted_text += "Status: " + out[0] + " - Hostname: " + body[k].hostname + " - CronId: " + body[k].cron_id + " - date: "+out[1] + " Error: "+ out[2];
                 }
+                let token = data.token;
 
                 //Send message to slack
                 bot.chat.postMessage({
-                    token: data.token,
+                    token: token,
                     channel: data.channel,
                     text: formatted_text
                 }).then(console.log).catch(console.log);
