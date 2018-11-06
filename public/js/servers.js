@@ -56,7 +56,7 @@ function newServer(){
 
         loader('show');
         $.post(routes.servers_api.add, {name: name, hostname: hostname, username: username, distribution: distribution, password: password}, function(response){
-            location.reload();
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -100,7 +100,7 @@ function editServer(_id){
         loader('show');
 
         $.post(routes.servers_api.update, {_id: server._id, name: name, hostname: hostname, username: username, distribution: distribution}, function(response){
-            location.reload();
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -109,8 +109,8 @@ function deleteServer(_id){
     // TODO fix this. pass callback properly
     messageBox("<p> Do you want to delete this server, this will also revoke ssh key from the server? </p>", "Confirm delete", null, null, function(){
         loader('show');
-        $.post(routes.servers_api.remove, {_id: _id}, function(){
-            location.reload();
+        $.post(routes.servers_api.remove, {_id: _id}, function(response){
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }

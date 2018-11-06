@@ -71,12 +71,7 @@ function newDeployJob(){
         }
         loader('show');
         $.post(routes.deploycronjobs_api.add, {server: server, job: job}, function(response){
-            if(response.resCode === 200) {
-                location.reload();
-            }else{
-                alert(response.err);
-                loader('hide');
-            }
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -116,7 +111,7 @@ function editServer(_id){
         loader('show');
 
         $.post(routes.deploycronjobs_api.update, {_id: server._id, name: name, hostname: hostname, username: username}, function(response){
-            location.reload();
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -125,8 +120,8 @@ function deleteCron(_id){
     // TODO fix this. pass callback properly
     messageBox("<p> Do you want to delete this deplolyed cron? </p>", "Confirm delete", null, null, function(){
         loader('show');
-        $.post(routes.deploycronjobs_api.remove, {_id: _id}, function(){
-            location.reload();
+        $.post(routes.deploycronjobs_api.remove, {_id: _id}, function(response){
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }

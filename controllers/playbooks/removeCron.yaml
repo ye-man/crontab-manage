@@ -14,3 +14,18 @@
       block: ""
       state: absent
 
+  - name: 'Remove stderr file from logs folder'
+    file:
+      path: "{{ log_path }}.stderr"
+      state: absent
+
+  - name: 'Remove stdout file from logs folder'
+    file:
+      path: "{{ log_path }}.stdout"
+      state: absent
+
+  - name: 'Remove log file from logs folder'
+    file:
+      path: "{{ log_path }}.log"
+      state: absent
+

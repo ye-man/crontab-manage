@@ -75,16 +75,13 @@ exports.create_new = function(req, res){
                         return res.json({resCode: 400, err: err});
                     }
 
-
-                    res.json({resCode: 200, data: _data}); //releasing the UI
-
                     let _data_to_send = {};
                     _data_to_send.server_details = serverdata[0];
                     _data_to_send.cron_details = crondata[0];
                     _data_to_send._id = newRow._id;
 
                     //start deploying and update database status when done;
-                    exports.deployCrons(_data_to_send);
+                    exports.deployCrons(res, _data_to_send);
                 });
             });
         });
@@ -92,11 +89,11 @@ exports.create_new = function(req, res){
 
 };
 
-exports.deployCrons = function(data){
+exports.deployCrons = function(res, data){
 
     let crontab_string = "";
-    let log_folder = (data.server_details.distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
 
+    let log_folder = (data.server_details.distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
     let stderr = path.join(log_folder, data.cron_details._id + ".stderr");
     let stdout = path.join(log_folder, data.cron_details._id + ".stdout");
     let log_file = path.join(log_folder, data.cron_details._id + ".log");
@@ -123,11 +120,7 @@ exports.deployCrons = function(data){
     let weekday = components[4];
     let cron_id = data.cron_details._id;
 
-    let job = crontab_string; //data.cron_details.job + "  3>&1 1>&2 2>&3  > " + log_file;
-
-
-    //* * * * * /usr/bin/php /var/www/html/info.php 3>&1 1>&2 2>&3 | cat >> /var/log/WzryoHYEL0xwfy9s.log; date >> /var/log/WzryoHYEL0xwfy9s.log;
-
+    let job = crontab_string;
 
     let hostname = data.server_details.hostname;
 
@@ -149,13 +142,13 @@ exports.deployCrons = function(data){
        console.log(stderr);
        if(!stderr){
            updateStatus(data._id, 'completed');
+           return res.json({resCode: 200, message: "Deployed"}); //releasing the UI
+
        }else{
            updateStatus(data._id, 'not_completed');
+           return res.json({resCode: 400, err: stderr});
        }
-       console.log(stdout);
     });
-
-
 };
 
 exports.update = function(data){
@@ -197,17 +190,25 @@ exports.remove = function(req, res){
 
                                 let cmd = "sed -i.bak '/" + cron_id + "/d' " + dest_txt_file_path;
 
-                                let extra_vars = "hostname=" + hostname + " cron_id='" + cron_id + "' cmd='"+cmd+"' dest_text_dir='"+dest_txt_file_path+"'";
+                                let log_folder = (serverdata.distribution === 'centos' ? centos_log_folder : ubuntu_log_folder);
+                                let log_path = path.join(log_folder, cron_id);
+
+                                let extra_vars = "hostname=" + hostname + " cron_id='" + cron_id + "' cmd='"+cmd+"' dest_text_dir='"+dest_txt_file_path+"' log_path='"+log_path+"'";
 
                                 let ansible_playbook_file = ansible_playbook_path + "removeCron.yaml";
                                 let ansible_cmd = '/usr/bin/ansible-playbook ' + ansible_playbook_file + ' --extra-vars "' + extra_vars + '"';
 
                                 exec(ansible_cmd, function (stderr, stdout) {
                                     console.log(stderr);
-                                    console.log(stdout);
+                                    if(stderr){
+                                        return res.json({resCode: 400, err: err});
+                                    }else{
+                                        return res.json({resCode: 200, message: 'Removed'});
+                                    }
+
                                 });
 
-                                res.json({resCode: 200, message: 'Removed'});
+
                             }
                         });
                     }

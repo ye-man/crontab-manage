@@ -32,19 +32,6 @@ exports.get = function(req, res){
 exports.delete = function(){
     fs.unlink(__dirname + '/servers/' + db_name);
 };
-//executeCmd();
-function executeCmd() {
-    setTimeout(function () {
-        hostname = "latency.killping.com";
-        let cmd = '/bin/cat ' + ansible_host_file_path + ' | /bin/grep '+hostname;
-        exec(cmd, function (err, stdout) {
-            if(!stdout && stdout === ""){
-                console.log('sadada')
-            }
-            console.log(stdout);
-        });
-    }, 1000);
-}
 
 exports.create_new = function(req, res){
     let data = req.body;
@@ -112,12 +99,13 @@ exports.create_new = function(req, res){
                 let ansible_cmd = '/usr/bin/ansible-playbook ' + ansible_playbook_file + ' --extra-vars "' + extra_vars + '"';
 
                 exec(ansible_cmd, function (stderr, stdout) {
-                    console.log(stderr);
-                    console.log(stdout);
+                   if(!stderr){
+                       db.insert(_data);
+                       return res.json({resCode: 200, message: "New server added"});
+                   }else{
+                       return res.json({resCode: 400, err: stderr});
+                   }
                 });
-
-                db.insert(_data);
-                return res.json({resCode: 200});
             }
         });
     });

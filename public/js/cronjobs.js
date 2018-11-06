@@ -51,7 +51,7 @@ function newCronJob(){
         loader('show');
 
         $.post(routes.cronjobs_api.add, data, function(response){
-            location.reload();
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -88,7 +88,7 @@ function editJob(_id){
         }
         loader('show');
         $.post(routes.cronjobs_api.update, data, function(response){
-            location.reload();
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
@@ -97,8 +97,8 @@ function deleteJob(_id){
     // TODO fix this. pass callback properly
     messageBox("<p> Do you want to delete this job? </p>", "Confirm delete", null, null, function(){
         loader('show');
-        $.post(routes.cronjobs_api.remove, {_id: _id}, function(){
-            location.reload();
+        $.post(routes.cronjobs_api.remove, {_id: _id}, function(response){
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
         });
     });
 }
