@@ -5,7 +5,6 @@ const db = new Datastore({filename: __dirname + '/cronjobsstatus/cronjobsstatus.
 let fs = require('fs');
 let db_name = "cronjobsstatus.db";
 let Slack = require('slack');
-//let slack_token = "xoxp-14021937204-19036521363-472579938356-a3aeeeeb127ca56eac84dd12bc7f8129";
 const bot = new Slack();
 
 
