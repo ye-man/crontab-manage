@@ -4,19 +4,43 @@ const path = require("path");
 const db = new Datastore({filename: __dirname + '/cronjobsstatus/cronjobsstatus.db'});
 let fs = require('fs');
 let db_name = "cronjobsstatus.db";
-const exec = require('child_process').exec;
-let ssh_key_path = "~/.ssh/id_rsa.pub";
-
+let Slack = require('slack');
+//let slack_token = "xoxp-14021937204-19036521363-472579938356-a3aeeeeb127ca56eac84dd12bc7f8129";
+const bot = new Slack();
 
 
 db.loadDatabase(function (err) {
-    if (err) throw err; // no hope, just terminate
 });
 
 exports.listener = function(req, res){
     res.json({resCode: 200}); //released the request
+
     let body = req.body;
+
     if(body && typeof body !== undefined) {
+        let slackdb = new Datastore({ filename: __dirname + '/slack/slack.db' });
+        slackdb.loadDatabase(function (err) {
+        });
+
+        slackdb.find({}, function (err, slackdata) {
+            if(!err && slackdata.length > 0){
+                let data = slackdata[0];
+                let formatted_text = "";
+                for(let k = 0; k < body.length; k++) {
+                    let out = body[k].output;
+                    formatted_text += "Status: " + out[0] + " - Hostname: " + body[k].hostname + " - CronId: " + body[k].cron_id;
+                }
+
+                //Send message to slack
+                bot.chat.postMessage({
+                    token: data.token,
+                    channel: data.channel,
+                    text: formatted_text
+                }).then(console.log).catch(console.log);
+            }
+        });
+
+        //Send message to dashboard
         socket.emit("cronsstatus", body);
     }
 

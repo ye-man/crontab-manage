@@ -208,7 +208,6 @@ exports.remove = function(req, res){
 
                                 });
 
-
                             }
                         });
                     }

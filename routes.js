@@ -3,6 +3,7 @@ exports.routes = {
     "cronjobs": "/cronjobs",
     "deploycronjobs": "/deploycronjobs",
     "cronjobsstatus": "/cronjobsstatus",
+    "slack": "/slack",
     "servers_api": {
         "add": "/servers/add",
         "update": "/servers/update",
@@ -27,6 +28,12 @@ exports.routes = {
         "remove": "/cronjobsstatus/remove",
         "list": "/cronjobsstatus/list",
         "listener": "/cronjobsstatus/listener"
+    },
+    "slack_api": {
+        "add": "/slack/add",
+        "update": "/slack/update",
+        "remove": "/slack/remove",
+        "list": "/slack/list"
     },
     "crontabhook": {
         "complete": "/crontabhook/complete"

@@ -45,6 +45,7 @@ global.dest_txt_file_path = "/opt/"+watcher_txt_file;
 global.ubuntu_log_folder = "/var/log";
 global.centos_log_folder = "/etc/httpd/logs";
 global.ansible_host_file_path = "/etc/ansible/hosts";
+
 io.on('connection', function (socket) {
     global.socket = socket;
 });
@@ -62,6 +63,8 @@ let cronjobs = require("./controllers/cronjobs");
 let deploycronjobs = require("./controllers/deploycronjobs");
 let crontabhook = require("./controllers/crontabhook");
 let cronjobsstatus = require("./controllers/cronjobsstatus");
+let slacks = require("./controllers/slack");
+
 
 
 app.get(routes.servers, function (req, res) {
@@ -190,6 +193,43 @@ app.post(routes.cronjobs_api.remove, function(req, res) {
 // get the log file a given job. id passed as query param
 app.get(routes.cronjobs_api.list, function(req, res) {
     cronjobs.get(req, res);
+});
+
+
+
+
+app.get(routes.slack, function (req, res) {
+    slacks.list(function(docs) {
+        res.render('slack', {
+            routes: JSON.stringify(routes),
+            slacks: JSON.stringify(docs),
+        });
+    });
+});
+
+
+// get the log file a given job. id passed as query param
+app.post(routes.slack_api.add, function(req, res) {
+    slacks.create_new(req.body);
+    res.end();
+});
+
+
+// get the log file a given job. id passed as query param
+app.post(routes.slack_api.update, function(req, res) {
+    slacks.update(req.body);
+    res.end();
+});
+
+// get the log file a given job. id passed as query param
+app.post(routes.slack_api.remove, function(req, res) {
+    slacks.remove(req.body);
+    res.end();
+});
+
+// get the log file a given job. id passed as query param
+app.get(routes.slack_api.list, function(req, res) {
+    slacks.get(req, res);
 });
 
 
