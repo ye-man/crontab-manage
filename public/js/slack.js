@@ -50,7 +50,7 @@ function newJob(){
         loader('show');
 
         $.post(routes.slack_api.add, data, function(response){
-            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); loader('hide'); } else { location.reload(); }
         });
     });
 }
@@ -86,7 +86,7 @@ function editJob(_id){
         loader('show');
 
         $.post(routes.slack_api.update, data, function(response){
-            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); loader('hide'); } else { location.reload(); }
         });
     });
 }
@@ -96,7 +96,7 @@ function deleteJob(_id){
     messageBox("<p> Do you want to delete this slack job? </p>", "Confirm delete", null, null, function(){
         loader('show');
         $.post(routes.slack_api.remove, {_id: _id}, function(response){
-            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); } else { location.reload(); }
+            if(response.resCode === 400){ toastr.error(JSON.stringify(response.err)); loader('hide'); } else { location.reload(); }
         });
     });
 }

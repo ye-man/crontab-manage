@@ -209,10 +209,7 @@ app.get(routes.slack, function (req, res) {
 
 
 // get the log file a given job. id passed as query param
-app.post(routes.slack_api.add, function(req, res) {
-    slacks.create_new(req.body);
-    res.end();
-});
+app.post(routes.slack_api.add, slacks.create_new);
 
 
 // get the log file a given job. id passed as query param
